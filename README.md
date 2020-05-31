@@ -17,7 +17,7 @@ BitPredict a Smart Contract Betting Factory.
 - Share the participation link with your friends/connections.
 
 ## BitPredict Contract?
-Creating the contract consists of 4 inputs / options:
+Creating the contract consists of 5 inputs:
 - **Contract Ticker:** the bet prediction target e.g. BTC-USD
 - **Ticket Price:** the participation price
 - **Closure Delay:** until when people can still participate
@@ -117,7 +117,6 @@ e.g.
 import 'IBitPredict.sol';
 
 contract Test {
-
     constructor() public {
         IBitPredict mContract = IBitPredict(0x70Ee5F70C3eECc4d951Ac87b7107fCcc33713469);
         uint  subscriptionPriceWei = mContract.ticketPriceWei();
@@ -131,43 +130,43 @@ pragma solidity >= 0.5.0 < 0.6.0;
 
 interface IBitPredict {
 
-	/// @dev returns (now) contract deployment time
+    /// @dev returns (now) contract deployment time
     function created() external returns (uint);
     
-	/// @dev subscription available until (created + closureDelay)
+    /// @dev subscription available until (created + closureDelay)
     function closureDelay() external returns (uint);
 	
-	/// @dev price calculation and winners pick at (created + executionDelay)
-	function executionDelay() external returns (uint);
+    /// @dev price calculation and winners pick at (created + executionDelay)
+    function executionDelay() external returns (uint);
 
     /// @dev ticket price in wei to subscribe
-	function ticketPriceWei() external returns (uint);
+    function ticketPriceWei() external returns (uint);
 	
-	/// @dev contract ticker e.g. 'BTC-USD'
+    /// @dev contract ticker e.g. 'BTC-USD'
     function ticker() external returns (bytes9);
 
-	/// @dev contract status: 0 open, 1 closed, 2 executed, 3 reward distributed
-	function status() external returns (uint);
+    /// @dev contract status: 0 open, 1 closed, 2 executed, 3 reward distributed
+    function status() external returns (uint);
 	
-	/// @dev return the count of subscribers and winners
+    /// @dev return the count of subscribers and winners
     function counters() external view returns (uint subs, uint wins);
 
-	/// @dev execution actual ticker price e.g. 10400 for 'BTC-USD'
+    /// @dev execution actual ticker price e.g. 10400 for 'BTC-USD'
     function winSolution() external returns (uint);
 
-	/// @dev winner closest prediction e.g. 10350 for 'BTC-USD'
+    /// @dev winner closest prediction e.g. 10350 for 'BTC-USD'
     function winGuess() external returns(uint);
 
-	/// @dev winner reward in WEI
+    /// @dev winner reward in WEI
     function winReward() external returns (uint);
 	
-	/// @dev emited on a new bet pariticipant
+    /// @dev emitted on a new bet participant
     event PriceBet(address user, uint bet, uint time);
 
-	/// @dev emited on price execution
+    /// @dev emitted on price execution
     event RoundExecuted(uint solution);
 	
-	/// @dev emited foreach winner reward
+    /// @dev emitted foreach winner reward
     event WinnerPayout(address winner, uint solution, uint guess, uint reward);
 
     // accept ether subscription payments
