@@ -57,8 +57,8 @@
     {/if}
     <br><br>
     <footer class="w3-blue w3-padding w3-card-4" style="position: fixed; bottom: 0; width: 100%">
-        <a class="w3-left" href="." style="text-decoration: none"><b>Integrate</b></a>
-        <a class="w3-right" href="." style="text-decoration: none"><b>Github</b></a>
+        <a class="w3-left" href="https://github.com/bitspent/bitpredict/blob/master/README.md" target="_blank" rel="noopener" style="text-decoration: none"><b>Integrate</b></a>
+        <a class="w3-right" href="https://github.com/bitspent/bitpredict" target="_blank" rel="noopener" style="text-decoration: none"><b>Github</b></a>
     </footer>
 </main>
 <script>
