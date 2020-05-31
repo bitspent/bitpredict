@@ -1,0 +1,53 @@
+{
+  "name": "bitpredict",
+  "version": "1.0.0",
+  "description": "Cryptocurrency Prediction",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "chance": "^1.1.4",
+    "copy-webpack-plugin": "^5.1.1",
+    "cross-fetch": "latest",
+    "css-loader": "^3.2.0",
+    "cssnano": "latest",
+    "file-loader": "^6.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.8.0",
+    "node-sass": "^4.14.1",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "page": "^1.11.5",
+    "request": "^2.88.0",
+    "sass": "^1.26.3",
+    "sass-loader": "^8.0.0",
+    "style-loader": "^1.0.0",
+    "svelte": "^3.9.1",
+    "svelte-loader": "^2.13.6",
+    "svelte-select": "^3.7.0",
+    "tape": "^4.10.1",
+    "url-loader": "^4.1.0",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.10",
+    "webpack-livereload-plugin": "^2.2.0",
+    "qrcode": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitspent/bitpredict.git"
+  },
+  "keywords": [
+    "crypto",
+    "bitcoin",
+    "ethereum",
+    "betting",
+    "blockchain"
+  ],
+  "author": "Fady Aro <aro.fadygmail.com>",
+  "license": "ARO"
+}

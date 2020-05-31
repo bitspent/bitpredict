@@ -1,0 +1,8 @@
+/node_modules/
+/public/build/
+
+.DS_Store
+/.idea/*.gitignore
+/.idea
+/public
+/package-lock.json
