@@ -10,4 +10,4 @@ function onlyHttps() {
 
 new App({target: document.getElementsByTagName('app')[0]});
 
-onlyHttps();
+// onlyHttps();
