@@ -4,7 +4,9 @@ let BitPredictFactory = {
 
     abi: abis.bitPredictFactory,
 
-    address: '0x4e8f1ccf050e59ec0939a34417ae9e175f862943',
+    // mainnet: 0x4e8f1ccf050e59ec0939a34417ae9e175f862943
+    // ropsten: 0x0221bD8DC990512F7c7FF3417d5436BB52C32a56
+    address: '0x0221bD8DC990512F7c7FF3417d5436BB52C32a56',
 
     instance() {
         return web3.eth.contract(BitPredictFactory.abi).at(BitPredictFactory.address);
