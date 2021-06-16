@@ -6,10 +6,10 @@
         <ModalFactoryContract {counter} {newContract} {pendingTx} {showClose} {showPending}/>
         <BitPredictHelper/>
         <div class="w3-row">
-            <div class="w3-col m6 l5 w3-padding">
+            <div class="w3-col m5 l4 w3-padding">
                 <ContractFactory {tickerList} {setPending}/>
             </div>
-            <div class="w3-col m6 l7 w3-padding">
+            <div class="w3-col m7 l8 w3-padding">
                 <ContractsFactory {userAddress} events="{events}"/>
             </div>
         </div>
@@ -56,9 +56,16 @@
         </div>
     {/if}
     <br><br>
-    <footer class="w3-blue w3-padding w3-card-4" style="position: fixed; bottom: 0; width: 100%">
-        <a class="w3-left" href="https://github.com/bitspent/bitpredict/blob/master/README.md" target="_blank" rel="noopener" style="text-decoration: none"><b>Integrate</b></a>
-        <a class="w3-right" href="https://github.com/bitspent/bitpredict" target="_blank" rel="noopener" style="text-decoration: none"><b>Github</b></a>
+    <footer class="w3-white w3-padding w3-card-4" style="position: fixed; bottom: 0; width: 100%">
+        <a class="w3-left w3-text-black" href="https://github.com/bitspent/bitpredict/blob/master/README.md" target="_blank"
+           rel="noopener" style="text-decoration: none">
+            <b>Integrate</b>
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABb0lEQVQ4T5XTTYhPYRTH8c/kJRZEzYZJ2VjYkKI0ZaWwmBUSKbJiq0gWs7UyiyliITFKCtmR3ewoJFux8TLIy0xolJeafnX+9bhl/jl16z7nd873nnPueQb8bUuwDsvrWYbF+I6v+IYPeNVLG6iXFRjHPgTSz17iJO70ANdxoF9WR/+DLQGkzC9Y+J+AhI8HsBUPmuSH+IgRRP9d8E+YwPHyJ2UyATtwvwGkt7NYVcPLAFdXlT/wts5JeRLAXtxsAIdwbZ52HmFz6c8DOILL5ZjByj6zyAeuVsxUAMdwoRzvmvL+xdmN2yV+DuAwrjTRQ5iap4ozOF36mwD24FaTcA/7a/O6nG018KXtDHYhSbFz2IT1Ndi0F8v5EoY7xKepYAOelfATO7GxfJPlz32YxYIO4G4Acb7HYInT2fGqqm0t8EUdwKneXTiKix1xDCca36/Our/IPvQAiduOg1iLNbiB0QaQP5NKX+Mxzmc75wCbxUnLgSdS/AAAAABJRU5ErkJggg==" alt="github">
+        </a>
+        <a class="w3-right" href="https://www.instagram.com/p/CAu0kN-gd_u/" target="_blank" rel="noopener"
+           style="text-decoration: none">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABb0lEQVQ4T6XTv0uXURTH8ZcaYiaGg0NDS0vR1FCIS6CgQTSYg0tSELSGQiS09ANFEBF0cAklgkB06Q8QEgVBaWhqbioCDdJAsaw4cB54FL9fBS9cHh7uOe97Pud+To1TrppS/ln0ox2NFbi/8AFz2I+YAtCKJVzMgO0KgPPoxDpuY6cAvMmbb+J7FVWXUItlvMbzAMT+iQHMlpJDxg38xRrOYQNPM+cRLkdyHIS2KC30xbqLGbTk/1fcw4WUeh3v0ByAJoTmjjy8ik+YxkucwTh6cAXfcCcb2XQUYAzduFaSE5AvmMhdFfAWDeg71MwVrGLouAoG8SzL3UxIdP8z7mP+OED05CPqsg/1eJwS4pnDQAckRLk76MJi3hjGGsYt/MF7vMjXipDe4pUKI0WDwgOvTjgaU+mR9gIQuuPGMMcCflcAxbw8xCQehBcKQHxH8CStulsFsJeVjpaHqYgP7W3pzvKkxvk/bKWtfxQJ/wHc8VERNGxFkQAAAABJRU5ErkJggg==" alt="instagram">
+        </a>
     </footer>
 </main>
 <script>
@@ -83,7 +90,10 @@
     import ContractWinners from "./ContractWinners.svelte";
     import ContractSubscribers from "./ContractSubscribers.svelte";
 
+    import _Web3 from 'web3';
+
     let web3 = window['web3'];
+
 
     let tickerList = [];
     let web3Warn = false;
@@ -121,25 +131,35 @@
     let txCache = {};
 
     async function loadContract() {
+
         let created = await BitPredict.callAsync('created');
         let closure = await BitPredict.callAsync('closureDelay');
         let execution = await BitPredict.callAsync('executionDelay');
+
+        closure = created * 1000 + closure * 1000;
+        execution = created * 1000 + execution * 1000;
+
         let ticketPriceWei = await BitPredict.callAsync('ticketPriceWei');
         let ticker = await BitPredict.callAsync('ticker');
         let resolver = await BitPredict.callAsync('resolver');
         let winGuess = await BitPredict.callAsync('winGuess');
         let winReward = await BitPredict.callAsync('winReward');
         let winShare = await BitPredict.callAsync('winShare');
-        let [usersCount, winnersCount] = await BitPredict.callAsync('counters');
-        userPrediction = (await BitPredict.callAsync('futures', userAddress)).toNumber() / 100;
+        let counters = await BitPredict.callAsync('counters');
+        let usersCount = counters[0];
+        let winnersCount = counters[1];
+
+        let futures = await BitPredict.callAsync('futures', userAddress);
+
+        userPrediction = (await BitPredict.callAsync('futures', userAddress)) / 100;
         userPredicted = userPrediction > 0;
-        userTicker = cleanAscii(web3.toAscii(ticker));
-        userJackpot = ticketPriceWei.toNumber() * usersCount * 1e-18;
+        userTicker = cleanAscii(_Web3.utils.toAscii(ticker));
+        userJackpot = ticketPriceWei * usersCount * 1e-18;
         userFees = 100 - winShare;
-        ticketPrice = ticketPriceWei.toNumber() * 1e-18;
+        ticketPrice = ticketPriceWei * 1e-18;
         userContract.contract = BitPredict.address;
-        userContract.closure = (created.toNumber() + closure.toNumber()) * 1000;
-        userContract.execution = (created.toNumber() + execution.toNumber()) * 1000;
+        userContract.closure = closure;
+        userContract.execution = execution;
 
         tickerPrice = await resolveTickerPriceAsync(resolver);
 
@@ -159,6 +179,7 @@
     }
 
     function watchWinners() {
+
         BitPredict.watchContractWins((event) => {
 
             if (txCache[event.transactionHash] === 1) {
@@ -167,10 +188,10 @@
                 txCache[event.transactionHash] = 1;
             }
 
-            let winner = event.args.winner;
-            let solution = event.args.solution;
-            let guess = event.args.guess;
-            let reward = event.args.reward;
+            let winner = event.returnValues.winner;
+            let solution = event.returnValues.solution;
+            let guess = event.returnValues.guess;
+            let reward = event.returnValues.reward;
 
             let evt = {
                 winner: winner,
@@ -194,9 +215,9 @@
                 clearLoading();
                 loadContract();
             }
-            let user = event.args.user;
-            let bet = event.args.bet;
-            let time = event.args.time;
+            let user = event.returnValues.user;
+            let bet = event.returnValues.bet;
+            let time = event.returnValues.time;
             let now = new Date().getTime();
 
             let evt = {
@@ -213,15 +234,19 @@
         BitPredictFactory.watchFactory((event) => {
             if (txCache[event.transactionHash] === 1)
                 return;
+
             txCache[event.transactionHash] = 1;
-            let creator = event.args.creator;
-            let contract = event.args.bitPredict;
-            let ticker = cleanAscii(web3.toAscii(event.args.ticker));
-            let ticket = `${event.args.weiTicket / 1e18} ETH`;
+
+            let creator = event.returnValues.creator;
+            let contract = event.returnValues.bitPredict;
+            let ticker = cleanAscii(_Web3.utils.toAscii(event.returnValues.ticker));
+            let ticket = `${event.returnValues.weiTicket / 1e18} ETH`;
             let now = new Date().getTime();
-            let created = event.args.created;
-            let closure = 1000 * (created.toNumber() + event.args.closureDelay.toNumber());
-            let execution = 1000 * (created.toNumber() + event.args.executionDelay.toNumber());
+
+            let created = event.returnValues.created * 1000;
+            let closure = created + event.returnValues.closureDelay * 1000;
+            let execution = created + event.returnValues.executionDelay * 1000;
+
             let evt = {
                 creator: creator,
                 contract: contract,
@@ -231,7 +256,7 @@
                 execution: execution
             };
             if (event.transactionHash === pendingTx) {
-                newContract = event.args.bitPredict;
+                newContract = event.returnValues.bitPredict;
                 clearPending();
             }
             events = addItem(events, evt, 9);
@@ -304,7 +329,7 @@
             } else {
                 setPending(null);
                 tickerList = await BitPredictFactory.callAsync('tickersList');
-                tickerList = tickerList.map(ticker => cleanAscii(web3.toAscii(ticker)));
+                tickerList = tickerList.map(ticker => cleanAscii(_Web3.utils.toAscii(ticker)));
                 clearPending(true);
                 watchFactory();
             }

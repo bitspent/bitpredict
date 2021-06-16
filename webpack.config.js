@@ -9,6 +9,16 @@ console.log("========================");
 console.log("webpack mode", mode);
 console.log("========================");
 
+const cssnano = require('cssnano');
+
+const cssnanoProcess = cssnano.process;
+
+cssnano.process = function(source, processOpts, pluginOpts) {
+  return cssnanoProcess.call(this, source, processOpts, Object.assign(pluginOpts || {}, {
+    preset: [ 'default', { calc: false } ]
+  }));
+};
+
 module.exports = {
     mode: mode,
     entry: {
@@ -30,7 +40,7 @@ module.exports = {
         }),
         new OptimizeCssAssetsPlugin({
             assetNameRegExp: /\.css$/g,
-            cssProcessor: require('cssnano'),
+            cssProcessor: cssnanoProcess,
             cssProcessorPluginOptions: {
                 preset: ['default', {discardComments: {removeAll: true}}]
             },

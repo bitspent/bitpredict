@@ -1,4 +1,5 @@
 import abis from './abis';
+import _Web3 from "web3";
 
 /*
  * Predict Client
@@ -14,43 +15,39 @@ let BitPredict = {
         },
 
         instance() {
-            return web3.eth.contract(BitPredict.abi).at(BitPredict.address);
+            const web3NoAccount = new _Web3(web3.currentProvider);
+            return new web3NoAccount.eth.Contract(BitPredict.abi, BitPredict.address, {});
         },
 
         instanceAt(address) {
-            let contract = web3.eth.contract(BitPredict.abi).at(address);
+            const web3NoAccount = new _Web3(web3.currentProvider);
+            let contract = new web3NoAccount.eth.Contract(BitPredict.abi, address, {});
             return {
-                callAsync: function () {
+                callAsync: async function () {
+                    let method = contract.methods[arguments[0]];
                     let args = Array.prototype.slice.apply(arguments).splice(1);
-                    let method = contract[arguments[0]];
-                    return new Promise((resolve, reject) => {
-                        args.push((err, res) => err ? reject(err) : resolve(res));
-                        method.call.apply(this, args);
-                    });
+                    let func = args.length > 0 ? method.call(this, args[0]) : method.call();
+                    return await func.call();
                 }
             }
         },
 
         async callContractAsync() {
+            let method = BitPredict.instance().methods[arguments[0]];
             let args = Array.prototype.slice.apply(arguments).splice(1);
-            let method = BitPredict.instance()[arguments[0]];
-            return new Promise((resolve, reject) => {
-                args.push((err, res) => err ? reject(err) : resolve(res));
-                method.call.apply(this, args);
-            });
+            let func = args.length > 0 ? method.call(this, args[0]) : method.call();
+            return await func.call();
         },
 
         placeBetAsync(address, userPrediction, ticketEth) {
             return new Promise((res, rej) => {
                 let price = Number(userPrediction).toFixed(2) * 100;
                 let wei = ticketEth * 1e18 + price;
-                const GAS_COST = 20e9;
                 const OP_COST = 150000;
                 web3.eth.sendTransaction({
                         from: address,
                         to: BitPredict.address,
                         value: wei,
-                        gasPrice: GAS_COST,
                         gas: OP_COST
                     }, (e, r) => e && rej(e) || res(r)
                 );
@@ -58,38 +55,40 @@ let BitPredict = {
         },
 
         async callAsync() {
-            let method = BitPredict.instance()[arguments[0]];
+            let method = BitPredict.instance().methods[arguments[0]];
             let args = Array.prototype.slice.apply(arguments).splice(1);
-            return new Promise((resolve, reject) => {
-                args.push((err, res) => err ? reject(err) : resolve(res));
-                method.call.apply(this, args);
-            });
+            let func = args.length > 0 ? method.call(this, args[0]) : method.call();
+            return await func.call();
         },
 
         watchContractBets(cb) {
             BitPredict
                 .instance()
-                .PriceBet({}, {fromBlock: 0, toBlock: 'latest'})
-                .watch(function (error, event) {
-                    if (!error) {
-                        cb && cb(event)
-                    } else {
-                        console.log(`error while watching factory events: ${error}`);
-                    }
-                });
+                .events['PriceBet']({filter: {}, fromBlock: 0}, function (error, event) {
+                if (error) {
+                    console.log(`error while watching factory events: ${error}`);
+                }
+            }).on('data', function (event) {
+                console.log(event);
+                cb && cb(event)
+            }).on('changed', function (event) {
+
+            }).on('error', console.error);
         },
 
         watchContractWins(cb) {
             BitPredict
                 .instance()
-                .WinnerPayout({}, {fromBlock: 0, toBlock: 'latest'})
-                .watch(function (error, event) {
-                    if (!error) {
-                        cb && cb(event)
-                    } else {
-                        console.log(`error while watching factory events: ${error}`);
-                    }
-                });
+                .events['WinnerPayout']({filter: {}, fromBlock: 0}, function (error, event) {
+                if (error) {
+                    console.log(`error while watching factory events: ${error}`);
+                }
+            }).on('data', function (event) {
+                console.log(event);
+                cb && cb(event)
+            }).on('changed', function (event) {
+
+            }).on('error', console.error);
         }
     }
 ;

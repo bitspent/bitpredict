@@ -13,7 +13,7 @@
     <td class="w3-padding-small">
         {#if event.open}
             <a class="w3-button w3-deep-purple w3-round"
-               rel="noopener" target="_blank" style="width: 50px"
+               rel="noopener" target="_blank" style="width: 50px; margin-top: 4px"
                href=".?contract={event.contract}">
                 <b>Bet</b>
             </a>

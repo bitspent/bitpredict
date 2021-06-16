@@ -1,17 +1,23 @@
-<div class="w3-border-blue w3-round w3-border w3-white">
+<div class="w3-border-blue w3-round w3-border w3-blue" style="padding: 2px">
     <div class="w3-container w3-blue">
         <h6 class="w3-left">
-        <a href="https://www.instagram.com/p/CAu0kN-gd_u" target="_blank" rel="noopener"
-           class="w3-button w3-round w3-medium">&#9432; <b> New Contract</b></a>
-    </h6>
+            <b class="w3-tooltip">
+                <a href="https://www.instagram.com/p/CAu0kN-gd_u" target="_blank" rel="noopener"
+                   class="w3-button w3-round w3-medium">&#9432; Create Round</a>
+                <span style="position:absolute;left:180px;z-index: 1; width: 140px"
+                      class="w3-text w3-tag">Make Your Own  Round</span>
+            </b>
+        </h6>
         <h6>
             <a href="https://etherscan.io/address/{BitPredictFactory.address}"
-               target="_blank" rel="noopener" class="w3-button w3-small w3-black w3-round w3-right"><b>Explore
-                &#11045</b></a>
+               target="_blank" rel="noopener" class="w3-button w3-small w3-black w3-round w3-right">
+                <b>Explore &#11045</b>
+            </a>
         </h6>
     </div>
-    <div class="w3-container w3-margin-top">
+    <div class="w3-container w3-white">
         <label class="w3-text-black">
+            <br>
             <b class="w3-tooltip">Crypto Ticker:
                 <span class="w3-text w3-tag"
                       style="position:absolute;left:250px;width:100%;z-index: 1">Crypto Prediction Price</span>
@@ -24,6 +30,7 @@
                 {/each}
             </select>
         </label>
+        <br>
         <br>
         <label class="w3-text-black ">
             <b class="w3-tooltip">Ticket Price: {crTicket/100} ETH

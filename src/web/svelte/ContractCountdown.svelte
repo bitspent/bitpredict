@@ -30,13 +30,18 @@
     }
 
     async function update() {
+
         if (event.contract) {
+
             let now = new Date().getTime();
-            let execution = event.execution;
-            let closure = event.closure;
+
+            let execution = Number(String(event.execution).substring(0, 13));
+            let closure = Number(String(event.closure).substring(0, 13));
+
             // not open anymore
             statNo = await BitPredict.instanceAt(event.contract).callAsync('status');
-            statNo = statNo.toNumber();
+            statNo = Number(statNo);
+
             // 0 -> closed but not executed
             if (statNo === 0) {
                 event.open = true;
@@ -46,14 +51,15 @@
                     event.closed = false;
                     event.executed = false;
                     status = `Closes in ${countdown(closure, now)}`;
-                    status += `<br> Executes on ${new Date(execution).toLocaleString()} `;
+                    status += `<br> Executes on ${new Date(execution).toLocaleString()}`;
                     event.notifyStatus && event.notifyStatus(event.open, status, event.executed);
                 } else {
                     if (execution > now) {
                         status = `Closing → Executes in ${countdown(execution, now)} `;
                     } else {
                         status = `Closing → Executes on ${new Date(execution).toLocaleString()} `;
-                        status += `<br> ${countdown(execution, now)} `;
+
+                        status += `<br> ${countdown(execution, now)}`;
                     }
                     event.notifyStatus && event.notifyStatus(event.open, status, event.executed);
                 }
@@ -76,7 +82,7 @@
                 event.open = false;
                 event.executed = true;
                 let sol = await BitPredict.instanceAt(event.contract).callAsync('winSolution');
-                sol = sol.toNumber() / 1000000;
+                sol = sol / 1000000;
                 status = `Executed → Awaiting rewards ${countdown(execution, now)} <br> Hit ${sol}`;
 
                 event.notifyStatus && event.notifyStatus(event.open, status, event.executed);
@@ -84,7 +90,7 @@
             // 3 -> executed or ended before
             else if (statNo === 3) {
                 let counters = await BitPredict.instanceAt(event.contract).callAsync('counters');
-                let subs = counters[0].toNumber();
+                let subs = counters[0];
                 if (subs > 0) {
                     status = 'Executed On ' + new Date(execution).toLocaleString();
                 } else {

@@ -12,13 +12,12 @@
                     <div class="w3-panel w3-blue w3-display-container">
                         <div>
                             <div class="loader w3-left"></div>
-                            <b style="margin-left: 20px">{ pendingTx === null ? 'Loading Contract From Ethereum' : 'Broadcasting Bet Transaction'}</b>
+                            <b style="margin-left: 20px">{ pendingTx ? 'Broadcasting Bet Transaction' : 'Loading Contract From Ethereum' }</b>
                             ({counter} sec)
                         </div>
                         {#if pendingTx != null}
                             <label>
-                                        <textarea class="w3-margin-top" style="width: 100%"
-                                                  readonly>{pendingTx}</textarea>
+                                <textarea class="w3-margin-top" style="width: 100%" readonly>{pendingTx}</textarea>
                             </label>
                         {/if}
                     </div>
